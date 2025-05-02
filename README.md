@@ -20,7 +20,7 @@ git push origin main
 ## Environments configuration
 
 ```bash
-conda create -n visa python=3.8 -y
+conda create -n visa python=3.10 -y
 ```
 
 ```bash
@@ -33,10 +33,10 @@ pip install -r requirements.txt
 
 ## Workflow
 
-1. constants
-2. entity
-3. components
-4. pipeline
+1. Constants
+2. Entities
+3. Components
+4. Pipeline
 5. Main file
 
 ### Export the environment variable
