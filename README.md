@@ -98,7 +98,7 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 
 ## 3. Create ECR repo to store/save docker image
 
-    - Save the URI: 315865595366.dkr.ecr.us-east-1.amazonaws.com/visarepo
+    - Save the URI: E.g: "480865595393.dkr.ecr.us-east-1.amazonaws.com/visa"
 
 ## 4. Create EC2 machine (Ubuntu)
 
@@ -106,12 +106,15 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 
     #optinal
 
+```bash
     sudo apt-get update -y
 
     sudo apt-get upgrade
+```
 
     #required
 
+```bash
     curl -fsSL https://get.docker.com -o get-docker.sh
 
     sudo sh get-docker.sh
@@ -119,10 +122,11 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
     sudo usermod -aG docker ubuntu
 
     newgrp docker
+```
 
 # 6. Configure EC2 as self-hosted runner:
 
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
+    Repo Setting > Actions > Runner > new self-hosted runner > choose os (Linux) > then copy and run the connection and config commands in the EC2 terminal.
 
 # 7. Setup github secrets:
 
