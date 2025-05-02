@@ -104,9 +104,9 @@ async def predictRouteClient(request: Request):
 
         status = None
         if value == 1:
-            status = "Visa-approved"
+            status = "Visa Approved!"
         else:
-            status = "Visa Not-Approved"
+            status = "Visa NOT Approved!"
 
         return templates.TemplateResponse(
             "usvisa.html",
@@ -116,6 +116,9 @@ async def predictRouteClient(request: Request):
     except Exception as e:
         return {"status": False, "error": f"{e}"}
 
+@app.get("/about", response_class=HTMLResponse, tags=["info"])
+async def about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
 
 if __name__ == "__main__":
     app_run(app, host=APP_HOST, port=APP_PORT)
