@@ -39,10 +39,22 @@ pip install -r requirements.txt
 4. Pipeline
 5. Main file
 
-### Export the environment variable
+### Export the environment variables
+
+Option 1: Include the variables inside your **.env** file as:
 
 ```bash
 
+MONGODB_CREDENTIAL="mongodb+srv://<username>:<password>...."
+
+AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
+
+AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
+```
+
+Option 2: Include the above credintials/URLs in your OS system environment as environment varaibles.
+
+```bash
 
 export MONGODB_URL="mongodb+srv://<username>:<password>...."
 
