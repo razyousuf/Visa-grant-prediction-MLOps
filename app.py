@@ -96,9 +96,8 @@ async def predictRouteClient(request: Request):
                                 )
         
         usvisa_df = usvisa_data.get_usvisa_input_data_frame()
-
         model_predictor = USvisaClassifier()
-
+        
         value = model_predictor.predict(dataframe=usvisa_df)[0]
 
         status = None
