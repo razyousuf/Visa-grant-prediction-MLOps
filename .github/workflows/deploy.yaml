@@ -92,11 +92,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
       - name: Deploy to Railway
-        uses: railwayapp/action@v1.0.2
+        uses: railwayapp/[razyousufi350@gmail.com]  # Updated to v3.0.0
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
           project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
