@@ -26,3 +26,4 @@ dotenv
 -e .
 
 gunicorn==23.0.0 # for railway app
+uvicorn
