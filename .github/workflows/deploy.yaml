@@ -102,3 +102,4 @@ jobs:
           railway up --service us-visa-app --detach
           railway variables set MONGODB_URL "${{ secrets.MONGODB_URL }}"
           railway variables set PORT "8080"
+          
