@@ -99,7 +99,12 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
+          # First connect to your project
+          railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
+          
+          # Then deploy
           railway up --service us-visa-app --detach
+          
+          # Set variables (only needed on first deploy)
           railway variables set MONGODB_URL "${{ secrets.MONGODB_URL }}"
           railway variables set PORT "8080"
-          
