@@ -96,15 +96,12 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          # First connect to your project
-          railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
-          
-          # Then deploy
-          railway up --service us-visa-app --detach
-          
-          # Set variables (only needed on first deploy)
-          railway variables set MONGODB_URL "${{ secrets.MONGODB_URL }}"
-          railway variables set PORT "8080"
+        uses: railwayapp/action@v1.0.2
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
+          service: us-visa-app
+          environment: production
+          variables: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
+            PORT=8080
