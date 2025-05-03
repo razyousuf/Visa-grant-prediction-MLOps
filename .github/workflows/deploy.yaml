@@ -91,12 +91,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          repository: 'razyousuf/Visa-grant-prediction-MLOps'
-          path: './'
-
-      - name: Deploy to Railway
-        uses: 'https://github.com/railwayapp/action@v3.0.0'
+        
+      - name: Deploy via Railway Action
+        uses: railwayapp/action@v3.0.0
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
           project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
