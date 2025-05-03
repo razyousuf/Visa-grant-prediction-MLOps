@@ -91,14 +91,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          repository: 'razyousuf/Visa-grant-prediction-MLOps'
+          path: './'
 
       - name: Deploy to Railway
-        uses: railwayapp/[razyousufi350@gmail.com]  # Updated to v3.0.0
+        uses: 'https://github.com/railwayapp/action@v3.0.0'
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
           project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
           service: us-visa-app
-          environment: production
           variables: |
             MONGODB_URL=${{ secrets.MONGODB_URL }}
             PORT=8080
