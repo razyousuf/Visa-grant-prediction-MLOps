@@ -1,0 +1,104 @@
+name: Multi-Platform Deployment (AWS/Railway)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Deployment target'
+        required: true
+        default: 'railway'
+        type: choice
+        options:
+        - aws
+        - railway
+
+jobs:
+  # Common build steps for both platforms
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      docker_image: ${{ steps.docker_build.outputs.image }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Docker image (AWS preparation)
+        if: ${{ github.event.inputs.platform == 'aws' || contains(github.event.head_commit.message, '[aws]') }}
+        id: docker_build
+        run: |
+          docker build -t us-visa-app .
+          echo "image=us-visa-app" >> $GITHUB_OUTPUT
+
+  # AWS-specific deployment
+  aws-deployment:
+    needs: build
+    if: ${{ github.event.inputs.platform == 'aws' || contains(github.event.head_commit.message, '[aws]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Tag and push to ECR
+        run: |
+          docker tag us-visa-app ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:latest
+
+  aws-ec2-deploy:
+    needs: aws-deployment
+    if: ${{ github.event.inputs.platform == 'aws' || contains(github.event.head_commit.message, '[aws]') }}
+    runs-on: self-hosted
+    steps:
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Pull and run container
+        run: |
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:latest
+          docker stop visa-app || true
+          docker rm visa-app || true
+          docker run -d \
+            --name visa-app \
+            -e MONGODB_URL="${{ secrets.MONGODB_URL }}" \
+            -p 8080:8080 \
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO }}:latest
+
+  # Railway-specific deployment
+  railway-deployment:
+    needs: build
+    if: ${{ github.event.inputs.platform == 'railway' || contains(github.event.head_commit.message, '[railway]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service us-visa-app --detach
+          railway variables set MONGODB_URL "${{ secrets.MONGODB_URL }}"
+          railway variables set PORT "8080"
