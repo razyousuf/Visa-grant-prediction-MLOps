@@ -118,5 +118,5 @@ async def predictRouteClient(request: Request):
 async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
-#if __name__ == "__main__":
-#    app_run(app, host=APP_HOST, port=APP_PORT)
+if __name__ == "__main__":
+    app_run(app, host=APP_HOST, port=APP_PORT)
